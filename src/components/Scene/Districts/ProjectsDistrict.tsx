@@ -152,7 +152,6 @@ export const ProjectsDistrict: React.FC<ProjectsDistrictProps> = ({ onSelectProj
             </Float>
 
             {/* Proximity Light */}
-            <pointLight position={[0, 5, 0]} color={offset.color} intensity={2.4} distance={16} />
           </group>
         );
       })}

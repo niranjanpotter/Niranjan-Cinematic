@@ -116,7 +116,6 @@ export const DistrictMarker: React.FC<DistrictMarkerProps> = ({
       </mesh>
 
       {/* Area Light */}
-      <pointLight position={[0, 5, 0]} color={color} intensity={isActive ? 4.5 : 1.8} distance={26} />
     </group>
   );
 };

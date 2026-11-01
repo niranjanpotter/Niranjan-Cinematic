@@ -186,8 +186,6 @@ export const ContactDistrict: React.FC<ContactDistrictProps> = ({ onOpenDetails 
               </Text>
             </group>
           </Float>
-
-          <pointLight position={[0, 2, 0]} color={node.color} intensity={1.8} distance={9} />
         </group>
       ))}
 

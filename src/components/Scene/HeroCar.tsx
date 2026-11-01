@@ -195,8 +195,6 @@ export const HeroCar = forwardRef<THREE.Group, HeroCarProps>(({ headlightsOn, is
         >
           POTTER 01
         </Text>
-        {/* White License Plate Overhead LED Light */}
-        <pointLight position={[0, 0.12, 0.08]} color="#ffffff" intensity={0.6} distance={0.8} />
       </group>
 
       {/* Rear Taillight Glow Light Casting onto Wet Road */}
@@ -330,12 +328,6 @@ export const HeroCar = forwardRef<THREE.Group, HeroCarProps>(({ headlightsOn, is
         color="#ff007f"
         intensity={2.8}
         distance={7}
-      />
-      <pointLight
-        position={[0, 0.1, -1]}
-        color="#00f0ff"
-        intensity={2.2}
-        distance={6}
       />
 
       {/* ================= 4 WHEELS (ALLOY RIMS + GOLD BRAKE CALIPERS) ================= */}

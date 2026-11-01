@@ -137,8 +137,6 @@ export const AchievementsDistrict: React.FC<AchievementsDistrictProps> = ({ onOp
                 </Text>
               </group>
             </Float>
-
-            <pointLight position={[0, 3, 0]} color="#fbbf24" intensity={2.0} distance={14} />
           </group>
         );
       })}

@@ -226,7 +226,8 @@ const PostFX: React.FC = () => {
   const composer = useMemo(() => {
     const c = new EffectComposer(gl);
     c.addPass(new RenderPass(scene, camera));
-    c.addPass(new UnrealBloomPass(new THREE.Vector2(size.width, size.height), 0.42, 0.55, 0.82));
+    // Half-resolution bloom: visually identical for a soft glow, a quarter of the fill cost.
+    c.addPass(new UnrealBloomPass(new THREE.Vector2(size.width / 2, size.height / 2), 0.4, 0.5, 0.85));
     c.addPass(new OutputPass());
     return c;
     // size is applied in the effect below
@@ -281,7 +282,7 @@ export const WorldCanvas: React.FC<WorldCanvasProps> = ({
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.05
         }}
-        dpr={[1, 1.75]}
+        dpr={[0.75, 1.25]}
       >
         <color attach="background" args={['#160a22']} />
         <fog attach="fog" args={['#1d0c2c', 40, 420]} />
@@ -295,7 +296,7 @@ export const WorldCanvas: React.FC<WorldCanvasProps> = ({
 
         {/* Image-based lighting built from a few emitters — gives the car body
             and wet road real reflections without loading an HDRI. */}
-        <Environment resolution={256} frames={1}>
+        <Environment resolution={128} frames={1}>
           <Lightformer form="rect" intensity={5} color="#ff7a18" position={[0, 6, -40]} scale={[60, 14, 1]} />
           <Lightformer form="rect" intensity={1.6} color="#ff007f" position={[-14, 5, 0]} rotation-y={Math.PI / 2} scale={[80, 4, 1]} />
           <Lightformer form="rect" intensity={1.6} color="#00f0ff" position={[14, 5, 0]} rotation-y={-Math.PI / 2} scale={[80, 4, 1]} />
