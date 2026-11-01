@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="120" viewBox="0 0 1200 120" role="img" aria-labelledby="footer-title">
+  <title id="footer-title">API design, integration delivery, and developer mentoring, with animated connection paths</title>
+  <defs>
+    <linearGradient id="footer-background">
+      <stop stop-color="#190B12"/>
+      <stop offset="1" stop-color="#451126"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .footer-flow { stroke-dasharray: 4 96; animation: footer-flow 8s linear infinite; }
+    .footer-return { animation-delay: -4s; }
+    @keyframes footer-flow { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .footer-flow { animation: none; } }
+  </style>
+  <rect width="1200" height="120" rx="16" fill="url(#footer-background)"/>
+  <rect x="1" y="1" width="1198" height="118" rx="15" fill="none" stroke="#C77B9B" stroke-opacity=".25"/>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="40" y="48" fill="#E5B5C7" font-size="12" letter-spacing="3">FROM DESIGN TO HANDOVER</text>
+    <text x="40" y="81" fill="#F8F0F3" font-size="21">API design / Integration delivery / Developer mentoring</text>
+  </g>
+  <g fill="none" stroke="#C77B9B" stroke-opacity=".5">
+    <path d="M850 40H920L960 80H1135"/>
+    <path d="M850 80H920L960 40H1135"/>
+  </g>
+  <g fill="none" stroke="#F8F0F3" stroke-width="2.5" stroke-linecap="round">
+    <path class="footer-flow" pathLength="100" d="M850 40H920L960 80H1135"/>
+    <path class="footer-flow footer-return" pathLength="100" d="M850 80H920L960 40H1135"/>
+  </g>
+  <g fill="#E5B5C7" stroke="#451126" stroke-width="4">
+    <circle cx="850" cy="40" r="6"/>
+    <circle cx="850" cy="80" r="6"/>
+    <circle cx="1135" cy="40" r="6"/>
+    <circle cx="1135" cy="80" r="6"/>
+  </g>
+</svg>
