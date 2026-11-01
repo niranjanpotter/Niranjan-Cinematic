@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Gauge, Info, Zap, MapPin } from 'lucide-react';
 import { DistrictInfo, PORTFOLIO_DATA } from '../../data/portfolioData';
+import { vehicleState, VehicleSnapshot } from '../../scene/vehicleState';
 
 interface DistrictHUDProps {
   currentDistrict: DistrictInfo;
-  speed: number;
-  carPos: { x: number; y: number; z: number };
   onOpenDetails: () => void;
   isAutoTour: boolean;
   onTurboBoost: () => void;
@@ -13,13 +12,15 @@ interface DistrictHUDProps {
 
 export const DistrictHUD: React.FC<DistrictHUDProps> = ({
   currentDistrict,
-  speed,
-  carPos,
   onOpenDetails,
   isAutoTour,
   onTurboBoost
 }) => {
-  const displaySpeed = Math.round(Math.abs(speed) * 6.5);
+  // Sample the vehicle a few times per second instead of re-rendering every frame.
+  const [{ speed, z: carZ }, setVehicle] = useState<VehicleSnapshot>(() => vehicleState.snapshot());
+  useEffect(() => vehicleState.subscribe(setVehicle, 8), []);
+
+  const displaySpeed = Math.round(Math.abs(speed) * 9);
   const maxSpeed = 160;
   const speedPercent = Math.min(100, Math.round((displaySpeed / maxSpeed) * 100));
 
@@ -66,7 +67,7 @@ export const DistrictHUD: React.FC<DistrictHUDProps> = ({
       <div className="pointer-events-auto px-4 py-2 rounded-2xl bg-black/80 backdrop-blur-md border border-slate-800 shadow-2xl flex items-center space-x-3">
         {districts.map((d, idx) => {
           const isCurrent = currentDistrict.id === d.id;
-          const isPassed = carPos.z <= d.zCoord;
+          const isPassed = carZ <= d.zCoord;
 
           return (
             <div key={d.id} className="flex items-center space-x-2">

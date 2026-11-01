@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
+import { MeshReflectorMaterial } from '@react-three/drei';
 
 // Lightweight, high-performance Stylized 3D Palm Tree (minimal draw calls)
 export const PalmTree: React.FC<{ position: [number, number, number]; scale?: number; rotationY?: number }> = ({
@@ -171,8 +172,9 @@ export const EnvironmentElements: React.FC = () => {
         <planeGeometry args={[120, roadLength]} />
         <meshStandardMaterial
           color="#07111e"
-          roughness={0.2}
-          metalness={0.8}
+          roughness={0.12}
+          metalness={0.9}
+          envMapIntensity={1.4}
         />
       </mesh>
 
@@ -189,10 +191,18 @@ export const EnvironmentElements: React.FC = () => {
       {/* ================= HIGHWAY ROAD WITH WET ASPHALT REFLECTIONS ================= */}
       <mesh position={[0, 0, roadCenterZ]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[13.2, roadLength]} />
-        <meshStandardMaterial
-          color="#0a0d16"
-          roughness={0.16}
-          metalness={0.88}
+        <MeshReflectorMaterial
+          color="#0b0e18"
+          roughness={0.35}
+          metalness={0.6}
+          mirror={0.55}
+          mixStrength={1.6}
+          mixBlur={1}
+          blur={[400, 100]}
+          resolution={512}
+          depthScale={0.6}
+          minDepthThreshold={0.85}
+          maxDepthThreshold={1.2}
         />
       </mesh>
 

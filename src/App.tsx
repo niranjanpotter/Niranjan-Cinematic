@@ -8,12 +8,10 @@ import { DetailModal } from './components/UI/DetailModal';
 import { MobileFallback } from './components/UI/MobileFallback';
 import { PORTFOLIO_DATA, DistrictInfo } from './data/portfolioData';
 import { soundManager } from './audio/soundManager';
+import { vehicleState, DRIVE } from './scene/vehicleState';
 
 export const App: React.FC = () => {
-  // Vehicle state
-  const [carPos, setCarPos] = useState({ x: 0, y: 0, z: 0 });
-  const [carRotation, setCarRotation] = useState(0);
-  const [speed, setSpeed] = useState(0);
+  // Vehicle state (position/speed live in vehicleState, outside React)
   const [headlightsOn, setHeadlightsOn] = useState(false);
   const [carStarted, setCarStarted] = useState(false);
   const [isNitroActive, setIsNitroActive] = useState(false);
@@ -53,10 +51,10 @@ export const App: React.FC = () => {
   const handleTurboBoost = () => {
     soundManager.playNitroBoost();
     setIsNitroActive(true);
-    setSpeed((prev) => (prev < 0 ? prev - 12 : -22));
+    vehicleState.fireNitro(1400);
     setTimeout(() => {
       setIsNitroActive(false);
-    }, 1200);
+    }, 1400);
   };
 
   // Keyboard listeners: 'C' key switches camera, 'Shift' fires Nitro
@@ -86,7 +84,6 @@ export const App: React.FC = () => {
 
     setTimeout(() => {
       setCarStarted(true);
-      setSpeed(-12);
     }, 700);
   };
 
@@ -107,9 +104,7 @@ export const App: React.FC = () => {
     if (idx !== -1) {
       setCurrentDistrictIndex(idx);
       setCurrentDistrict(district);
-      setCarPos({ x: 0, y: 0, z: district.zCoord + 8 });
-      setCarRotation(0);
-      setSpeed(isAutoTour ? -8 : 0);
+      vehicleState.teleport(district.zCoord + 8, isAutoTour ? DRIVE.autoTourSpeed : 0);
       if (!carStarted) {
         setCarStarted(true);
         setHeadlightsOn(true);
@@ -182,12 +177,6 @@ export const App: React.FC = () => {
         }
       >
         <WorldCanvas
-          carPos={carPos}
-          setCarPos={setCarPos}
-          carRotation={carRotation}
-          setCarRotation={setCarRotation}
-          speed={speed}
-          setSpeed={setSpeed}
           headlightsOn={headlightsOn}
           carStarted={carStarted}
           isAutoTour={isAutoTour}
@@ -233,8 +222,6 @@ export const App: React.FC = () => {
       {!isIntroActive && (
         <DistrictHUD
           currentDistrict={currentDistrict}
-          speed={speed}
-          carPos={carPos}
           onOpenDetails={() => handleOpenDetails(currentDistrict.id)}
           isAutoTour={isAutoTour}
           onTurboBoost={handleTurboBoost}

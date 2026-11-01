@@ -1,63 +1,54 @@
-import React, { useRef } from 'react';
+import { useRef, forwardRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
+import { vehicleState } from '../../scene/vehicleState';
 
 interface HeroCarProps {
-  position: [number, number, number];
-  rotation: [number, number, number];
   headlightsOn: boolean;
   isMoving: boolean;
-  speed: number;
 }
 
-export const HeroCar: React.FC<HeroCarProps> = ({
-  position,
-  rotation,
-  headlightsOn,
-  isMoving,
-  speed
-}) => {
+// Position/rotation are driven directly by SceneRig through the forwarded group ref.
+export const HeroCar = forwardRef<THREE.Group, HeroCarProps>(({ headlightsOn, isMoving }, ref) => {
   const wheelsRef = useRef<THREE.Group[]>([]);
   const underglowRef = useRef<THREE.PointLight>(null);
   const nitroFlameRef1 = useRef<THREE.Mesh>(null);
   const nitroFlameRef2 = useRef<THREE.Mesh>(null);
 
-  useFrame((_, delta) => {
-    // 1. Wheel spin rotation based on speed
-    if (wheelsRef.current.length > 0 && isMoving) {
-      wheelsRef.current.forEach((wheel) => {
-        if (wheel) {
-          wheel.rotation.x -= speed * delta * 11;
-        }
-      });
-    }
+  useFrame(({ clock }, delta) => {
+    const speed = vehicleState.speed;
+    // Wheel radius ~0.35 -> angular velocity = v / r
+    const spin = (speed / 0.35) * delta;
+    wheelsRef.current.forEach((wheel) => {
+      if (wheel) wheel.rotation.x += spin;
+    });
 
-    // 2. Pulse underglow & exhaust flame
-    const time = Date.now() * 0.006;
+    const time = clock.elapsedTime * 6;
     if (underglowRef.current) {
       underglowRef.current.intensity = 2.4 + Math.sin(time) * 0.8;
     }
 
-    const flameScale = isMoving ? 1.0 + Math.sin(time * 4) * 0.5 : 0.15;
-    if (nitroFlameRef1.current) {
-      nitroFlameRef1.current.scale.set(flameScale, flameScale, flameScale * 1.6);
-    }
-    if (nitroFlameRef2.current) {
-      nitroFlameRef2.current.scale.set(flameScale, flameScale, flameScale * 1.6);
-    }
+    const throttle = Math.min(1, Math.abs(speed) / 12);
+    const nitro = vehicleState.isNitroActive ? 1.8 : 1;
+    const flameScale = isMoving ? (0.25 + throttle * 0.75 + Math.sin(time * 4) * 0.25) * nitro : 0.15;
+    nitroFlameRef1.current?.scale.set(flameScale, flameScale, flameScale * 1.6);
+    nitroFlameRef2.current?.scale.set(flameScale, flameScale, flameScale * 1.6);
   });
 
   return (
-    <group position={position} rotation={rotation}>
+    <group ref={ref}>
       {/* ================= HIGH-END MID-ENGINE SUPERCAR BODY ================= */}
       {/* Lower Main Hull / Carbon Tub */}
       <mesh position={[0, 0.35, 0]} castShadow receiveShadow>
         <boxGeometry args={[2.14, 0.32, 4.6]} />
-        <meshStandardMaterial
-          color="#060912"
-          roughness={0.08}
-          metalness={0.95}
+        <meshPhysicalMaterial
+          color="#05070f"
+          roughness={0.18}
+          metalness={0.9}
+          clearcoat={1}
+          clearcoatRoughness={0.06}
+          envMapIntensity={1.6}
         />
       </mesh>
 
@@ -173,7 +164,7 @@ export const HeroCar: React.FC<HeroCarProps> = ({
         <meshStandardMaterial
           color="#ff0033"
           emissive="#ff0033"
-          emissiveIntensity={isMoving ? 6.5 : 4.5}
+          emissiveIntensity={isMoving ? 4 : 2.5}
         />
       </mesh>
 
@@ -425,4 +416,5 @@ export const HeroCar: React.FC<HeroCarProps> = ({
       </group>
     </group>
   );
-};
+});
+HeroCar.displayName = 'HeroCar';
